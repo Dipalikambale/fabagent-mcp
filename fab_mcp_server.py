@@ -129,10 +129,13 @@ class FabLabMCPServer:
         """
         mesh = trimesh.load(mesh_path)
         
-        # Run automated mesh hygiene repairs
-        trimesh.repair.fix_normals(mesh)
-        trimesh.repair.fix_inversion(mesh)
-        trimesh.repair.fill_holes(mesh)
+        # Run automated mesh hygiene repairs gracefully
+        try:
+            trimesh.repair.fix_normals(mesh)
+            trimesh.repair.fix_inversion(mesh)
+            trimesh.repair.fill_holes(mesh)
+        except Exception:
+            pass
 
         is_watertight = bool(mesh.is_watertight)
         is_printable = len(mesh.faces) > 4 and abs(float(mesh.volume)) > 1.0
